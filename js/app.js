@@ -26,52 +26,54 @@ const datosBusqueda = {
 }
 
 
-//Eventos
+//Eventoss
 document.addEventListener("DOMContentLoaded",() => {
-    mostrarAutos();//Muestra los automobiles
+    mostrarAutos(autos);//Muestra los automobiles
 
     //Llenar las opciones de años
     llenarSelect();
 });
 
-//EventListener para los select de busqueda
+//EventListener para los select de busqueda:
+
 //Marca
 marca.addEventListener("change", (e) => {
     datosBusqueda.marca = e.target.value;
-    console.log(datosBusqueda);
+    
+    filtrarAuto();
 });
 //Year Select
 year.addEventListener("change", (e) => {
-    datosBusqueda.year = e.target.value;
-    console.log(datosBusqueda);
+    datosBusqueda.year = parseInt( e.target.value );
+
+    filtrarAuto();
 });
-//Minimo
+//Minimo Select
 minimo.addEventListener("change", (e) => {
     datosBusqueda.minimo = e.target.value;
-    console.log(datosBusqueda);
 });
 //Maximo Select
 maximo.addEventListener("change", (e) => {
     datosBusqueda.maximo = e.target.value;
-    console.log(datosBusqueda);
 });
 //Puertas Select
 puertas.addEventListener("change", (e) => {
     datosBusqueda.puertas = e.target.value;
-    console.log(datosBusqueda);
 });
 //Transmision Select
 transmision.addEventListener("change", (e) => {
     datosBusqueda.transmision = e.target.value;
-    console.log(datosBusqueda);
 });
 //Color Select
 color.addEventListener("change", (e) => {
     datosBusqueda.color = e.target.value;
-    console.log(datosBusqueda);
 });
 
-function mostrarAutos() {
+//Mostrar en el html
+function mostrarAutos(autos) {
+
+    limpiarHTML();//Elimina HTML previo
+
     autos.forEach( auto => {
         const { marca, modelo, year, puertas, transmision, precio, color } = auto;
         const autoHTML = document.createElement("p");
@@ -84,7 +86,14 @@ function mostrarAutos() {
     })
 }
 
-//Genera los años del select
+//Limpiar HTML
+function limpiarHTML() {
+    while(resultado.firstChild) {
+        resultado.removeChild(resultado.firstChild);
+    }
+}
+
+//Genera los años del select:
 function llenarSelect() {
     for( let i = max; i > min; i-- ) {
         const opcion = document.createElement("option");
@@ -92,4 +101,28 @@ function llenarSelect() {
         opcion.textContent = i;
         year.appendChild(opcion);//agrega opciones de año al select
     }
+}
+
+//Funcion que filtra en base a la busqueda:
+function filtrarAuto() {
+    const resultado = autos.filter( filtrarMarca ).filter( filtrarYear );
+
+    console.log(resultado);
+    mostrarAutos(resultado);
+}
+
+function filtrarMarca(auto) {
+    const { marca } = datosBusqueda;
+    if( marca ) {
+        return auto.marca === marca;
+    }
+    return auto;
+}
+
+function filtrarYear(auto) {
+    const { year } = datosBusqueda;
+    if( year ) {
+        return auto.year === year;
+    }
+    return auto;
 }
